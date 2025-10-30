@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Donate | PUMA Movies</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Rajdhani', sans-serif;
+        color: #1a1a1a;
+        padding: 50px 20px;
+        overflow-x: hidden;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: auto;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        border: 2px solid #d20000;
+    }
+
+    h1 {
+        font-family: 'Orbitron', sans-serif;
+        text-align: center;
+        color: #d20000;
+        font-size: 2.2em;
+        margin-bottom: 15px;
+    }
+
+    p.intro {
+        text-align: center;
+        color: #444;
+        font-size: 1.1em;
+        margin-bottom: 35px;
+    }
+
+    .donate-box {
+        background: linear-gradient(180deg, #ff0000 0%, #660000 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin: 20px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: 0.3s;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+
+    .donate-box:hover {
+        transform: scale(1.03);
+        box-shadow: none;
+    }
+
+    .bank-info {
+        font-size: 1.1em;
+    }
+
+    .bank-info strong {
+        font-size: 1.3em;
+        color: #fff;
+        display: block;
+    }
+
+    .account-number {
+        font-size: 1.2em;
+        color: #fff;
+        margin-top: 6px;
+    }
+
+    .btn-copy {
+        background: #fff;
+        color: #d20000;
+        font-weight: 700;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 30px;
+        cursor: pointer;
+        font-family: 'Rajdhani', sans-serif;
+        transition: 0.3s;
+    }
+
+    .btn-copy:hover {
+        background: #d20000;
+        color: white;
+    }
+
+    .whatsapp {
+        text-align: center;
+        margin-top: 35px;
+    }
+
+    .whatsapp a {
+        background: #25D366;
+        color: white;
+        padding: 15px 35px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 700;
+        font-size: 1.1em;
+        transition: 0.3s;
+        display: inline-block;
+    }
+
+    .whatsapp a:hover {
+        background: #231ea9;
+    }
+
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Support PUMA Movies</h1>
+    <p class="intro">
+        If you enjoy our projects and want to support our creative journey,<br>
+        you can send donations through the accounts below.<br>
+        Every contribution helps us improve President University Movie Assignment (PUMA).
+    </p>
+
+    <!-- SeaBank -->
+    <div class="donate-box">
+        <div class="bank-info">
+            <strong>SeaBank</strong>
+            <div>Account Name: <b>Yarisunal Firdaus</b></div>
+            <div class="account-number" id="seabank">901271929231</div>
+        </div>
+        <button class="btn-copy" onclick="copyAccount('seabank')">Copy</button>
+    </div>
+
+    <!-- Dana -->
+    <div class="donate-box">
+        <div class="bank-info">
+            <strong>Dana</strong>
+            <div>Account Name: <b>Yarisunal Firdaus</b></div>
+            <div class="account-number" id="dana">+62 822-9987-1645</div>
+        </div>
+        <button class="btn-copy" onclick="copyAccount('dana')">Copy</button>
+    </div>
+
+    <!-- WhatsApp Confirmation -->
+    <div class="whatsapp">
+        <a href="https://wa.me/6282299871645?text=Hello%20Yarisunal%20Firdaus!%20I%20have%20sent%20a%20donation%20to%20your%20account.%20Here%20is%20the%20proof%20of%20transfer:" target="_blank">
+            Send Confirmation via WhatsApp
+        </a>
+    </div>
+</div>
+
+<script>
+function copyAccount(id) {
+    const number = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(number);
+    alert("✅ Account number copied: " + number);
+}
+</script>
+
+</body>
+</html>

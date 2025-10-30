@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PUMA | Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Rajdhani', sans-serif;
+    }
+
+    body {
+        background: linear-gradient(135deg, #b30000, #111);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        color: #fff;
+    }
+
+    .login-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        width: 380px;
+        padding: 40px 30px;
+        text-align: center;
+        backdrop-filter: blur(12px);
+        transition: all 0.3s ease;
+    }
+
+    .login-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 12px 40px rgba(255, 0, 0, 0.3);
+    }
+
+    .logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        margin-bottom: 25px;
+    }
+
+    .logo-container img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: 2px solid #ff3333;
+        background-color: white;
+        object-fit: contain;
+    }
+
+    h2 {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 1.4em;
+        color: #ff3333;
+        margin-bottom: 15px;
+    }
+
+    .input-box {
+        width: 100%;
+        margin: 15px 0;
+        position: relative;
+    }
+
+    .input-box input {
+        width: 100%;
+        padding: 12px 45px 12px 15px;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+        font-size: 1em;
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+        letter-spacing: 0.5px;
+        transition: background 0.3s;
+    }
+
+    .input-box input:focus {
+        background: rgba(255, 255, 255, 0.25);
+    }
+
+    /* 👁️ Password toggle button */
+    .toggle-pass {
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 1.2em;
+        color: #ff6666;
+        transition: 0.3s;
+    }
+
+    .toggle-pass:hover {
+        color: #ff9999;
+    }
+
+    .btn {
+        margin-top: 20px;
+        width: 100%;
+        padding: 12px;
+        font-size: 1.1em;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        background: #ff3333;
+        color: white;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .btn:hover {
+        background: #ff5555;
+        transform: scale(1.03);
+    }
+
+    .error-message {
+        color: #ff6666;
+        font-size: 0.9em;
+        margin-top: 10px;
+        height: 18px;
+    }
+
+    footer {
+        text-align: center;
+        margin-top: 25px;
+        font-size: 0.8em;
+        color: #ccc;
+    }
+
+    @media (max-width: 420px) {
+        .login-card {
+            width: 90%;
+            padding: 30px 20px;
+        }
+    }
+</style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="logo-container">
+            <img src="images/PUMA.jpg" alt="PUMA Logo">
+            <img src="images/President.png" alt="President University Logo">
+        </div>
+        <h2>Sign In to PUMA</h2>
+        <form id="loginForm">
+            <div class="input-box">
+                <input type="text" id="username" placeholder="Enter Username or ID" required>
+            </div>
+            <div class="input-box">
+                <input type="password" id="password" placeholder="Enter Password" required>
+                <span class="toggle-pass" id="togglePass">Show</span>
+            </div>
+            <button type="submit" class="btn">Login</button>
+            <div class="error-message" id="errorMsg"></div>
+        </form>
+        <footer>© 2025 PUMA Website Project</footer>
+    </div>
+
+<script>
+    const accounts = [
+        { username: "yaris", id: "110011", pass: "yaris_11" },
+        { username: "sultan", id: "120012", pass: "sultan_12" },
+        { username: "fatih", id: "130013", pass: "fatih_13" },
+        { username: "grace", id: "140014", pass: "grace_14" },
+        { username: "marlisa", id: "150015", pass: "marlisa_15" }
+    ];
+
+    const form = document.getElementById("loginForm");
+    const errorMsg = document.getElementById("errorMsg");
+
+   
+    const togglePass = document.getElementById("togglePass");
+    const passwordField = document.getElementById("password");
+    let isVisible = false;
+
+    togglePass.addEventListener("click", () => {
+        isVisible = !isVisible;
+        passwordField.type = isVisible ? "text" : "password";
+        togglePass.textContent = isVisible ? "Hide" : "Show";
+    });
+
+    // 🔑 Login validation
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        const usernameInput = document.getElementById("username").value.trim().toLowerCase();
+        const passwordInput = document.getElementById("password").value.trim();
+
+        const user = accounts.find(acc =>
+            (acc.username === usernameInput || acc.id === usernameInput) &&
+            acc.pass === passwordInput
+        );
+
+        if (user) {
+            window.location.href = "index2.html";
+        } else {
+            errorMsg.textContent = "ID/Username or Password Are Wrong, Please try again.";
+        }
+    });
+</script>
+
+</body>
+</html>

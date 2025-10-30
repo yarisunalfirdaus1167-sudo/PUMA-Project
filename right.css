@@ -1,0 +1,110 @@
+body {
+  margin: 0;
+  background: linear-gradient(180deg, rgb(168, 18, 18), rgb(153, 8, 8));
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+}
+
+.right-frame {
+  width: 300px;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.title {
+  text-align: center;
+  font-size: 18px;
+  color: #f7f4f4;
+  text-shadow: 0 0 8px #ff4a4a;
+  margin-bottom: 20px;
+}
+
+/* Banner Box */
+.ad-banner {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ad-banner:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(255, 60, 60, 0.6);
+}
+
+.ad-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.7);
+  transition: 0.5s;
+}
+
+.ad-banner:hover .ad-bg {
+  filter: brightness(1);
+}
+
+.ad-content {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  right: 15px;
+}
+
+.ad-content h2 {
+  margin: 0;
+  font-size: 16px;
+  text-shadow: 0 0 8px #ff2e2e;
+}
+
+.ad-content p {
+  font-size: 13px;
+  margin: 3px 0 8px;
+}
+
+.ad-content a {
+  text-decoration: none;
+}
+
+.ad-content button {
+  background: linear-gradient(90deg, #ff3c3c, #ff6464);
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  font-size: 12px;
+  transition: 0.3s;
+}
+
+.ad-content button:hover {
+  background: linear-gradient(90deg, #ff7878, #ff2020);
+  box-shadow: 0 0 10px #ff4a4a;
+}
+
+/* Animasi */
+.mlbb { animation: slideIn 6s infinite alternate ease-in-out; }
+.valorant { animation: pulse 3s infinite ease-in-out; }
+.genshin { animation: zoom 7s infinite alternate ease-in-out; }
+
+@keyframes slideIn {
+  from { transform: translateX(8px); }
+  to { transform: translateX(-8px); }
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 10px rgba(255, 50, 50, 0.4); }
+  50% { box-shadow: 0 0 30px rgba(255, 50, 50, 0.8); }
+  100% { box-shadow: 0 0 10px rgba(255, 50, 50, 0.4); }
+}
+
+@keyframes zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}

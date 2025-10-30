@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trending Now | PUMA Movies</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            color: #ffffff;
+            padding: 40px 25px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: #d20000;
+            font-size: 2.5em;
+            margin-bottom: 25px;
+            text-align: center;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(210, 0, 0, 0.5);
+        }
+        
+        /* ===== GRID CONTAINER ===== */
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
+            justify-items: center;
+        }
+        
+        /* ===== CARD STYLE ===== */
+        .movie-card {
+            background: #1a1a1a;
+            border-radius: 15px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 200px;
+            transition: 0.3s;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .movie-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 20px rgba(210, 0, 0, 0.3);
+        }
+        
+        /* ===== POSTER ===== */
+        .movie-poster {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+            border-bottom: 2px solid #d20000;
+        }
+        
+        .movie-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.4s ease;
+            display: block;
+        }
+        
+        .movie-card:hover img {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+        
+        /* ===== BADGES ===== */
+        .movie-rating {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #ff9900;
+            font-weight: bold;
+            font-size: 0.85em;
+            padding: 4px 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .movie-rating i {
+            margin-right: 5px;
+        }
+        
+        .movie-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.8em;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+        
+        /* ===== OVERLAY BUTTONS ===== */
+        .movie-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: 0.3s;
+        }
+        
+        .movie-card:hover .movie-overlay {
+            opacity: 1;
+        }
+        
+        .overlay-btn {
+            background: #fff;
+            color: #d20000;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            font-family: 'Rajdhani', sans-serif;
+            padding: 8px 18px;
+            margin: 6px 0;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 140px;
+            text-align: center;
+        }
+        
+        .overlay-btn:hover {
+            background: #d20000;
+            color: #fff;
+        }
+        
+        /* ===== INFO SECTION ===== */
+        .movie-info {
+            padding: 15px;
+            text-align: center;
+            background: #1a1a1a;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+        
+        .movie-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1em;
+            color: #fff;
+            font-weight: 700;
+            margin: 6px 0 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .movie-meta {
+            font-size: 0.85em;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+        
+        .movie-year {
+            display: inline-block;
+            background: rgba(210, 0, 0, 0.2);
+            color: #d20000;
+            font-weight: 700;
+            border-radius: 12px;
+            padding: 3px 10px;
+            font-size: 0.75em;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .movie-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+            
+            .movie-poster {
+                height: 220px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .movie-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Trending Movies</h1>
+
+        <!-- MOVIE GRID -->
+        <div class="movie-grid">
+            <!-- Movie 1 -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="genre/images/chainsaw.png" alt="Chainsaw Man: Reze Arc">
+                    <span class="movie-rating"><i class="fas fa-star"></i> 9.3</span>
+                    <span class="movie-badge">4K</span>
+                    <div class="movie-overlay">
+                        <button class="overlay-btn">WATCH</button>
+                        <button class="overlay-btn" onclick="window.open('https://youtu.be/GJ1jrCnm-t8?si=Tvt4exnOmk82HLRT')">TRAILER</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">Chainsaw-man: Reze Arc</h3>
+                    <p class="movie-meta">Animation</p>
+                    <span class="movie-year">2025</span>
+                </div>
+            </div>
+
+            <!-- Movie 2 -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="genre/images/Avatar.jpg" alt="Avatar">
+                    <span class="movie-rating"><i class="fas fa-star"></i> 9.3</span>
+                    <span class="movie-badge">4K</span>
+                    <div class="movie-overlay">
+                        <button class="overlay-btn">COMING SOON</button>
+                        <button class="overlay-btn" onclick="window.open('https://www.youtube.com/watch?v=nb_fFj_0rq8')">TRAILER</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">Avatar</h3>
+                    <p class="movie-meta">Animation</p>
+                    <span class="movie-year">2025</span>
+                </div>
+            </div>
+
+            <!-- Movie 3 -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="genre/images/Interstellar.jpg" alt="Interstellar">
+                    <span class="movie-rating"><i class="fas fa-star"></i> 8.7</span>
+                    <span class="movie-badge">4K</span>
+                    <div class="movie-overlay">
+                        <button class="overlay-btn">WATCH</button>
+                        <button class="overlay-btn" onclick="window.open('https://www.youtube.com/watch?v=zSWdZVtXT7E')">TRAILER</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">Interstellar</h3>
+                    <p class="movie-meta">Adventure</p>
+                    <span class="movie-year">2014</span>
+                </div>
+            </div>
+
+            <!-- Movie 4 -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="genre/images/sore.webp" alt="SORE">
+                    <span class="movie-rating"><i class="fas fa-star"></i> 8.6</span>
+                    <span class="movie-badge">4K</span>
+                    <div class="movie-overlay">
+                        <button class="overlay-btn">COMING SOON</button>
+                        <button class="overlay-btn" onclick="window.open('https://www.youtube.com/watch?v=HiVzpboRpR0')">TRAILER</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">SORE</h3>
+                    <p class="movie-meta">Romance</p>
+                    <span class="movie-year">2023</span>
+                </div>
+            </div>
+
+            <!-- Movie 5 -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="genre/images/jumbo.jpg" alt="JUMBO">
+                    <span class="movie-rating"><i class="fas fa-star"></i> 8.1</span>
+                    <span class="movie-badge">4K</span>
+                    <div class="movie-overlay">
+                        <button class="overlay-btn">WATCH</button>
+                        <button class="overlay-btn" onclick="window.open('https://www.youtube.com/watch?v=yMqDgbZmBdk')">TRAILER</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">JUMBO</h3>
+                    <p class="movie-meta">Animation</p>
+                    <span class="movie-year">2023</span>
+                </div>
+            </div>
+
+            <!-- Movie 6 -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="genre/images/your.jpg" alt="Your Letter">
+                    <span class="movie-rating"><i class="fas fa-star"></i> 8.6</span>
+                    <span class="movie-badge">4K</span>
+                    <div class="movie-overlay">
+                        <button class="overlay-btn">COMING SOON</button>
+                        <button class="overlay-btn" onclick="window.open('https://www.youtube.com/watch?v=GTKu2mLpeS4')">TRAILER</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">YOUR LETTER</h3>
+                    <p class="movie-meta">Animation</p>
+                    <span class="movie-year">2023</span>
+                </div>
+            </div>
+
+            <!-- Movie 7 -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="genre/images/Ngeri-Ngeri Sedap.jpg" alt="Ngeri-Ngeri Sedap">
+                    <span class="movie-rating"><i class="fas fa-star"></i> 9.7</span>
+                    <span class="movie-badge">4K</span>
+                    <div class="movie-overlay">
+                        <button class="overlay-btn">WATCH</button>
+                        <button class="overlay-btn" onclick="window.open('https://youtu.be/ETMUbIIB_VY?si=9huxFba-SfcW9wPT')">TRAILER</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">Ngeri-Ngeri Sedap</h3>
+                    <p class="movie-meta">Comedy, Family, Romance</p>
+                    <span class="movie-year">2022</span>
+                </div>
+            </div>
+
+            <!-- Movie 8 -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="genre/images/Home Alone.jpg" alt="Home Alone">
+                    <span class="movie-rating"><i class="fas fa-star"></i> 8.6</span>
+                    <span class="movie-badge">4K</span>
+                    <div class="movie-overlay">
+                        <button class="overlay-btn">WATCH</button>
+                        <button class="overlay-btn" onclick="window.open('https://youtu.be/NOIgZYlYvyk?si=dshQeG9lXtrnaXal')">TRAILER</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">Home Alone</h3>
+                    <p class="movie-meta">Comedy, Family</p>
+                    <span class="movie-year">1990</span>
+                </div>
+            </div>
+
+            <!-- Movie 9 -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="genre/images/Queen of Tears 1.jpg" alt="Queen of Tears">
+                    <span class="movie-rating"><i class="fas fa-star"></i> 8.5</span>
+                    <span class="movie-badge">4K</span>
+                    <div class="movie-overlay">
+                        <button class="overlay-btn">WATCH</button>
+                        <button class="overlay-btn" onclick="window.open('https://youtu.be/LbAb-PSsmcc?si=sFG217jOmgHkcmCG')">TRAILER</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">Queen of Tears</h3>
+                    <p class="movie-meta">Romance</p>
+                    <span class="movie-year">2025</span>
+                </div>
+            </div>
+
+            <!-- Movie 10 -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="genre/images/Itewon Class.jpg" alt="Itewon Class">
+                    <span class="movie-rating"><i class="fas fa-star"></i> 8.1</span>
+                    <span class="movie-badge">4K</span>
+                    <div class="movie-overlay">
+                        <button class="overlay-btn">WATCH</button>
+                        <button class="overlay-btn" onclick="window.open('https://youtu.be/NNP8m3gaaFE?si=M3zISIoPqVJtaMJ1')">TRAILER</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">Itewon Class</h3>
+                    <p class="movie-meta">Romance</p>
+                    <span class="movie-year">2020</span>
+                </div>
+            </div>
+
+            <!-- Movie 11 -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="genre/images/Final Destination 5.jpg" alt="Final Destination Bloodlines">
+                    <span class="movie-rating"><i class="fas fa-star"></i> 7.6</span>
+                    <span class="movie-badge">4K</span>
+                    <div class="movie-overlay">
+                        <button class="overlay-btn">WATCH</button>
+                        <button class="overlay-btn" onclick="window.open('https://youtu.be/yqN7nHM1YTA?si=1QVPGQ3IBzrDf6Uf')">TRAILER</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">Final Destination Bloodlines</h3>
+                    <p class="movie-meta">Horror / Supernatural</p>
+                    <span class="movie-year">2025</span>
+                </div>
+            </div>
+
+            <!-- Movie 12 -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="genre/images/medium.jpg" alt="The Medium">
+                    <span class="movie-rating"><i class="fas fa-star"></i> 7.5</span>
+                    <span class="movie-badge">4K</span>
+                    <div class="movie-overlay">
+                        <button class="overlay-btn">WATCH</button>
+                        <button class="overlay-btn" onclick="window.open('https://www.youtube.com/watch?v=wDtJ3M4arIc')">TRAILER</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">The Medium</h3>
+                    <p class="movie-meta">Documentary</p>
+                    <span class="movie-year">2021</span>
+                </div>
+            </div>
+
+            <!-- Movie 13 -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="genre/images/28 Years Later.jpg" alt="28 Years Later">
+                    <span class="movie-rating"><i class="fas fa-star"></i> 8.9</span>
+                    <span class="movie-badge">4K</span>
+                    <div class="movie-overlay">
+                        <button class="overlay-btn">WATCH</button>
+                        <button class="overlay-btn" onclick="window.open('https://youtu.be/hDZ7y8RP5HE?si=WHhBFjoxnsY7nnym')">TRAILER</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">28 Years Later</h3>
+                    <p class="movie-meta">Horror / Zombies</p>
+                    <span class="movie-year">2024</span>
+                </div>
+            </div>
+
+            <!-- Movie 14 -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="genre/images/shang-chi.jpeg" alt="Shang-Chi and the Legend of Ten Rings">
+                    <span class="movie-rating"><i class="fas fa-star"></i> 7.3</span>
+                    <span class="movie-badge">4K</span>
+                    <div class="movie-overlay">
+                        <button class="overlay-btn">WATCH</button>
+                        <button class="overlay-btn" onclick="window.open('https://youtu.be/giWIr7U1deA?si=1Vr3lWtNAA6pv5FZ')">TRAILER</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">Shang-Chi and the Legend of Ten Rings</h3>
+                    <p class="movie-meta">Family</p>
+                    <span class="movie-year">2021</span>
+                </div>
+            </div>
+
+            <!-- Movie 15 -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="genre/images/Crash Landing on You.jpg" alt="Crash Landing on You">
+                    <span class="movie-rating"><i class="fas fa-star"></i> 9.7</span>
+                    <span class="movie-badge">4K</span>
+                    <div class="movie-overlay">
+                        <button class="overlay-btn">WATCH</button>
+                        <button class="overlay-btn" onclick="window.open('https://youtu.be/GVQGWgeVc4k?si=FwHk6nGDuCZgc_CI')">TRAILER</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">Crash Landing on You</h3>
+                    <p class="movie-meta">Romance, Action, Comedy, Political</p>
+                    <span class="movie-year">2019</span>
+                </div>
+            </div>
+
+            <!-- Movie 16 -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="genre/images/Ant-Man-WASP.webp" alt="Ant-Man and the Wasp: Quantumania">
+                    <span class="movie-rating"><i class="fas fa-star"></i> 8.9</span>
+                    <span class="movie-badge">4K</span>
+                    <div class="movie-overlay">
+                        <button class="overlay-btn">WATCH</button>
+                        <button class="overlay-btn" onclick="window.open('https://youtu.be/yqN7nHM1YTA?si=1QVPGQ3IBzrDf6Uf')">TRAILER</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">Ant-Man and the Wasp: Quantumania</h3>
+                    <p class="movie-meta">Thriller / Superhero</p>
+                    <span class="movie-year">2023</span>
+                </div>
+            </div>
+
+            <!-- Movie 17 -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="genre/images/Business Proposal.jpg" alt="Business Proposal">
+                    <span class="movie-rating"><i class="fas fa-star"></i> 9.7</span>
+                    <span class="movie-badge">4K</span>
+                    <div class="movie-overlay">
+                        <button class="overlay-btn">WATCH</button>
+                        <button class="overlay-btn" onclick="window.open('https://youtu.be/mh4R-WXRhQo?si=KRikT9vuj1aKZy6K')">TRAILER</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">Business Proposal</h3>
+                    <p class="movie-meta">Romantic Comedy</p>
+                    <span class="movie-year">2022</span>
+                </div>
+            </div>
+
+    <!-- Movie 18 -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="genre/images/demon.png" alt="Business Proposal">
+                    <span class="movie-rating"><i class="fas fa-star"></i> 9.7</span>
+                    <span class="movie-badge">4K</span>
+                    <div class="movie-overlay">
+                        <button class="overlay-btn">WATCH</button>
+                        <button class="overlay-btn" onclick="window.open('https://youtu.be/x7uLutVRBfI?si=forHmgkBQES4L5nL')">TRAILER</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">Demon's Slayer: Infinity Castle</h3>
+                    <p class="movie-meta">Animation</p>
+                    <span class="movie-year">2025</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectCard(card) {
+            document.querySelectorAll('.movie-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+        }
+        
+        // Add event listeners to all movie cards
+        document.querySelectorAll('.movie-card').forEach(card => {
+            card.addEventListener('click', function() {
+                selectCard(this);
+            });
+        });
+    </script>
+</body>
+</html>
