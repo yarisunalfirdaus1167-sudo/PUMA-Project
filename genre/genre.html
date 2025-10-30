@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Genres | PUMA</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Rajdhani', sans-serif;
+        color: #1a1a1a;
+        padding: 40px;
+        overflow-x: hidden;
+    }
+
+    h1 {
+        font-family: 'Orbitron', sans-serif;
+        text-align: center;
+        color: #d20000;
+        margin-bottom: 20px;
+    }
+
+    /* ===== Navigation List ===== */
+    nav {
+        margin: 0 auto 40px;
+        max-width: 800px;
+        background: linear-gradient(135deg, #301818, #1c1b1b);
+        padding: 15px 25px;
+        border-radius: 15px;
+        border-bottom: 2px solid #ff1744;
+    }
+
+    nav h2 {
+        color: #b30000;
+        font-family: 'Orbitron', sans-serif;
+        margin-bottom: 10px;
+        font-size: 1.2em;
+    }
+
+    nav ul {
+        list-style: disc;
+        padding-left: 20px;
+        columns: 2;
+        column-gap: 40px;
+    }
+
+    nav ul li {
+        margin: 6px 0;
+        font-weight: 600;
+    }
+
+    nav ul li a {
+        color: #d20000;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+    nav ul li a:hover {
+        color: #a00000;
+        text-decoration: underline;
+    }
+
+    /* ===== Section Titles ===== */
+    h2.section-title {
+        font-family: 'Orbitron', sans-serif;
+        color: #d20000;
+        font-size: 1.5em;
+        margin: 40px 0 15px;
+    }
+
+    /* ===== Scroll Container ===== */
+    .scroll-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .card-row {
+        display: flex;
+        gap: 20px;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        padding-bottom: 20px;
+        scrollbar-width: none;
+    }
+
+    .card-row::-webkit-scrollbar {
+        display: none;
+    }
+
+    .arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #d20000;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 1.2em;
+        cursor: pointer;
+        z-index: 5;
+        transition: 0.3s;
+    }
+
+    .arrow:hover { background: #a00000; }
+    .arrow.left { left: -10px; }
+    .arrow.right { right: -10px; }
+
+    /* ===== Movie Card ===== */
+    .movie-card {
+        background: linear-gradient(180deg, #ff0000 0%, #660000 100%);
+        border-radius: 18px;
+        color: white;
+        width: 200px;
+        height: 300px;
+        flex: 0 0 auto;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        cursor: pointer;
+    }
+
+    .movie-card:hover {
+        transform: scale(1.08);
+        box-shadow: none;
+        z-index: 10;
+    }
+
+    .movie-card.active {
+        transform: scale(1.15);
+        filter: brightness(1.2);
+    }
+
+    .movie-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.85);
+        transition: 0.3s;
+    }
+
+    .movie-card:hover img {
+        filter: brightness(1);
+    }
+
+    .overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 10%, rgba(0,0,0,0) 70%);
+        opacity: 0;
+        transition: 0.3s;
+    }
+
+    .movie-card:hover .overlay { opacity: 1; }
+
+    .actions {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.8);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        opacity: 0;
+        transition: 0.3s;
+    }
+
+    .movie-card:hover .actions {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    .btn {
+        background: white;
+        color: #d20000;
+        border: none;
+        border-radius: 25px;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 8px 20px;
+        font-family: 'Rajdhani', sans-serif;
+        transition: 0.3s;
+    }
+
+    .btn:hover {
+        background: #d20000;
+        color: white;
+    }
+
+    .badge {
+        position: absolute;
+        top: 10px;
+        display: flex;
+        align-items: center;
+        font-size: 0.85em;
+        font-weight: bold;
+        padding: 4px 8px;
+        border-radius: 8px;
+    }
+
+    .rating {
+        left: 10px;
+        background: rgba(255,255,255,0.9);
+        color: #ff9900;
+    }
+
+    .res {
+        right: 10px;
+        background: rgba(0,0,0,0.6);
+        color: #fff;
+    }
+
+    .movie-info {
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        right: 15px;
+    }
+
+    .movie-title {
+        font-weight: 700;
+        font-size: 1.1em;
+        margin-bottom: 3px;
+    }
+
+    .movie-genre {
+        font-size: 0.9em;
+        opacity: 0.9;
+    }
+
+    .movie-year {
+        background: rgba(255,255,255,0.9);
+        color: #d20000;
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 10px;
+        margin-top: 5px;
+        font-size: 0.8em;
+        font-weight: 700;
+    }
+</style>
+</head>
+<body>
+
+<h1>All Movie Genres</h1>
+
+<!-- ===== GENRE NAVIGATION ===== -->
+<nav>
+    <h2>Jump to Genre:</h2>
+    <ul>
+        <li><a href="#action">Action</a></li>
+        <li><a href="#adventure">Adventure</a></li>
+        <li><a href="#comedy">Comedy</a></li>
+        <li><a href="#drama">Drama</a></li>
+        <li><a href="#horror">Horror</a></li>
+        <li><a href="#thriller">Thriller</a></li>
+        <li><a href="#family">Family</a></li>
+        <li><a href="#crime">Crime</a></li>
+        <li><a href="#animation">Animation</a></li>
+        <li><a href="#documentary">Documentary</a></li>
+    </ul>
+</nav>
+
+<!-- ===== TEMPLATE SECTION EXAMPLE ===== -->
+<section id="action">
+    <h2 class="section-title">Action</h2>
+    <div class="scroll-container">
+        <div class="arrow left" onclick="scrollLeft(this)">‹</div>
+        <div class="card-row">
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Avatar.jpg">
+                <div class="badge rating">⭐ 9.3</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=nb_fFj_0rq8')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Avatar: Fire and Ash</div>
+                    <div class="movie-genre">Action</div>
+                    <div class="movie-year">2025</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Jurassic.jpg">
+                <div class="badge rating">⭐ 8.9</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=jan5CFWs9ic')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Jurassic World Rebirth</div>
+                    <div class="movie-genre">Action</div>
+                    <div class="movie-year">2025</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Superman_(2025_film)_poster.jpg">
+                <div class="badge rating">⭐ 8.9</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=Ox8ZLF6cGM0')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Superman 2025</div>
+                    <div class="movie-genre">Action</div>
+                    <div class="movie-year">2025</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Mission.jpg">
+                <div class="badge rating">⭐ 9.3</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=fsQgc9pCyDU')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Mission: Impossible The Final Reckoning</div>
+                    <div class="movie-genre">Action</div>
+                    <div class="movie-year">2025</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/fantastic.jpg">
+                <div class="badge rating">⭐ 7.0</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=18QQWa5MEcs')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">The Fantastic Four: First Steps</div>
+                    <div class="movie-genre">Action</div>
+                    <div class="movie-year">2025</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Interstellar.jpg">
+                <div class="badge rating">⭐ 8.7</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=zSWdZVtXT7E')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Interstellar</div>
+                    <div class="movie-genre">Action</div>
+                    <div class="movie-year">2014</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Godzilla.jpg">
+                <div class="badge rating">⭐ 6.3</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=odM92ap8_c0')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Godzilla vs. Kong</div>
+                    <div class="movie-genre">Action</div>
+                    <div class="movie-year">2021</div>
+                </div>
+            </div>
+        </div>
+        <div class="arrow right" onclick="scrollRight(this)">›</div>
+    </div>
+</section>
+
+<section id="adventure">
+    <h2 class="section-title">Adventure</h2>
+    <div class="scroll-container">
+        <div class="arrow left" onclick="scrollLeft(this)">‹</div>
+        <div class="card-row">
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Jungle.jpg">
+                <div class="badge rating">⭐ 6.5</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=f_HvoipFcA8')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Jungle Cruise</div>
+                    <div class="movie-genre">Adventure</div>
+                    <div class="movie-year">2020</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/everest.jpg">
+                <div class="badge rating">⭐ 7.1</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=79Q2rrQlPW4')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Everest</div>
+                    <div class="movie-genre">Adventure</div>
+                    <div class="movie-year">2015</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/TheLostCityPoster.jpg">
+                <div class="badge rating">⭐ 6.1</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=nfKO9rYDmE8   ')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">The Lost City</div>
+                    <div class="movie-genre">Adventure</div>
+                    <div class="movie-year">2022</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Jumanji.jpeg">
+                <div class="badge rating">⭐ 8.9</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=2QKg5SZ_35I')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Jumanji: Welcome To The Jungle</div>
+                    <div class="movie-genre">Adventure</div>
+                    <div class="movie-year">2017</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                    <img src="images/predator1.jpg">
+                    <div class="badge rating">⭐ 6.5</div>
+                    <div class="badge res">HD</div>
+                    <div class="overlay"></div>
+                    <div class="actions">
+                        <button class="btn">WATCH</button>
+                        <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=43R9l7EkJwE')">TRAILER</button>
+                    </div>
+                    <div class="movie-info">
+                        <div class="movie-title">Predator: Badlands</div>
+                        <div class="movie-genre">Adventure</div>
+                        <div class="movie-year">2025</div>
+                    </div>
+                </div>
+                <div class="movie-card" onclick="selectCard(this)">
+                    <img src="images/split.jpg">
+                    <div class="badge rating">⭐ 3.5</div>
+                    <div class="badge res">HD</div>
+                    <div class="overlay"></div>
+                    <div class="actions">
+                        <button class="btn">WATCH</button>
+                        <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=XKlF4Jo7_vY')">TRAILER</button>
+                    </div>
+                    <div class="movie-info">
+                        <div class="movie-title">CONTINENTAL SPLIT</div>
+                        <div class="movie-genre">Animation</div>
+                        <div class="movie-year">2024</div>
+                    </div>
+                </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/twisters.jpg">
+                <div class="badge rating">⭐ 6.5</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/OWEq2Pf8qpk?si=nl8OFILLtMIhKpRc')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Twisters 2024</div>
+                    <div class="movie-genre">Adventure</div>
+                    <div class="movie-year">2024</div>
+                </div>
+            </div>
+        </div>
+        <div class="arrow right" onclick="scrollRight(this)">›</div>
+    </div>
+</section>
+
+<section id="comedy">
+    <h2 class="section-title">Comedy</h2>
+    <div class="scroll-container">
+        <div class="arrow left" onclick="scrollLeft(this)">‹</div>
+        <div class="card-row">
+            <div class="movie-card" onclick="selectCard(this)">
+            <img src="images/Ngeri-Ngeri Sedap.jpg">
+            <div class="badge rating">⭐ 9.7</div>
+            <div class="badge res">4K</div>
+            <div class="overlay"></div>
+            <div class="actions">
+                <button class="btn">WATCH</button>
+                <button class="btn" onclick="event.stopPropagation(); window.open('https://youtu.be/ETMUbIIB_VY?si=9huxFba-SfcW9wPT')">TRAILER</button>
+            </div>
+            <div class="movie-info">
+                <div class="movie-title">Ngeri-Ngeri Sedap</div>
+                <div class="movie-genre">Comedy, family, and romance</div>
+                <div class="movie-year">2022</div>
+            </div>
+        </div>
+
+        <!-- 2 -->
+        <div class="movie-card" onclick="selectCard(this)">
+            <img src="images/Home Alone.jpg">
+            <div class="badge rating">⭐ 9.7</div>
+            <div class="badge res">4K</div>
+            <div class="overlay"></div>
+            <div class="actions">
+                <button class="btn">WATCH</button>
+                <button class="btn" onclick="event.stopPropagation(); window.open('https://youtu.be/NOIgZYlYvyk?si=dshQeG9lXtrnaXal')">TRAILER</button>
+            </div>
+            <div class="movie-info">
+                <div class="movie-title">Home Alone</div>
+                <div class="movie-genre">Comedy and Family</div>
+                <div class="movie-year">1990</div>
+            </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="movie-card" onclick="selectCard(this)">
+            <img src="images/Korean film.jpg">
+            <div class="badge rating">⭐ 9.7</div>
+            <div class="badge res">4K</div>
+            <div class="overlay"></div>
+            <div class="actions">
+                <button class="btn">WATCH</button>
+                <button class="btn" onclick="event.stopPropagation(); window.open('https://youtu.be/EKyqO0X4oM8?si=z9fwd61MiT4zUA87')">TRAILER</button>
+            </div>
+            <div class="movie-info">
+                <div class="movie-title">6/45 Lucky Lotto</div>
+                <div class="movie-genre">Comedy and action</div>
+                <div class="movie-year">2022</div>
+            </div>
+        </div>
+
+        <!-- 4 -->
+        <div class="movie-card" onclick="selectCard(this)">
+            <img src="images/Warkop DKI Reborn.jpg">
+            <div class="badge rating">⭐ 9.5</div>
+            <div class="badge res">4K</div>
+            <div class="overlay"></div>
+            <div class="actions">
+                <button class="btn">WATCH</button>
+                <button class="btn" onclick="event.stopPropagation(); window.open('https://youtu.be/T0ki7KwvO1Q?si=VyvyOFGcnscJg6ek')">TRAILER</button>
+            </div>
+            <div class="movie-info">
+                <div class="movie-title">Warkop DKI Reborn</div>
+                <div class="movie-genre">Comedy</div>   
+                <div class="movie-year">2016</div>
+            </div>
+        </div>
+
+        <!-- 5 -->
+        <div class="movie-card" onclick="selectCard(this)">
+            <img src="images/Pokoknya Beres.jpg">
+            <div class="badge rating">⭐ 9.6</div>
+            <div class="badge res">4K</div>
+            <div class="overlay"></div>
+            <div class="actions">
+                <button class="btn">WATCH</button>
+                <button class="btn" onclick="event.stopPropagation(); window.open('https://youtu.be/aVn-gnZ1Jks?si=HlCfN-W-Kbcb5Ayw')">TRAILER</button>
+            </div>
+            <div class="movie-info">
+                <div class="movie-title">Pokoknya Beres</div>
+                <div class="movie-genre">Comedy</div>
+                <div class="movie-year">1983</div>
+            </div>
+        </div>
+
+        <!-- 6 -->
+        <div class="movie-card" onclick="selectCard(this)">
+            <img src="images/Friend Zone.jpg">
+            <div class="badge rating">⭐ 9.5</div>
+            <div class="badge res">4K</div>
+            <div class="overlay"></div>
+            <div class="actions">
+                <button class="btn">WATCH</button>
+                <button class="btn" onclick="event.stopPropagation(); window.open('https://youtu.be/LHzwwYcrKks?si=dwq91iYhnNgfGRKZ')">TRAILER</button>
+            </div>
+            <div class="movie-info">
+                <div class="movie-title">Friendzone</div>
+                <div class="movie-genre">Comedy and romance</div>
+                <div class="movie-year">2019</div>
+            </div>
+        </div>
+
+        <!-- 7 -->
+        <div class="movie-card" onclick="selectCard(this)">
+            <img src="images/Midnight Runners.jpg">
+            <div class="badge rating">⭐ 9.6</div>
+            <div class="badge res">4K</div>
+            <div class="overlay"></div>
+            <div class="actions">
+                <button class="btn">WATCH</button>
+                <button class="btn" onclick="event.stopPropagation(); window.open('https://youtu.be/XJf3lqjosUo?si=YW9YRdN1XLFV7P1T')">TRAILER</button>
+            </div>
+            <div class="movie-info">
+                <div class="movie-title">Midnight Runners</div>
+                <div class="movie-genre">Comedy and action</div>
+                <div class="movie-year">2017</div>
+            </div>
+        </div>
+
+        <!-- 8 -->
+        <div class="movie-card" onclick="selectCard(this)">
+            <img src="images/My Stupid Boss.jpg">
+            <div class="badge rating">⭐ 9.5</div>
+            <div class="badge res">4K</div>
+            <div class="overlay"></div>
+            <div class="actions">
+                <button class="btn">WATCH</button>
+                <button class="btn" onclick="event.stopPropagation(); window.open('https://youtu.be/FuC8H8eXZFU?si=gHIN56bxCsmAUf9d')">TRAILER</button>
+            </div>
+            <div class="movie-info">
+                <div class="movie-title">My Stupid Boss</div>
+                <div class="movie-genre">Comedy</div>
+                <div class="movie-year">2016</div>
+            </div>
+        </div>
+
+        <!-- 9 -->
+        <div class="movie-card" onclick="selectCard(this)">
+            <img src="images/Pilot.jpg">
+            <div class="badge rating">⭐ 9.5</div>
+            <div class="badge res">4K</div>
+            <div class="overlay"></div>
+            <div class="actions">
+                <button class="btn">WATCH</button>
+                <button class="btn" onclick="event.stopPropagation(); window.open('https://youtu.be/Mf5T0lPlKKY?si=lZbLSP-zGShESt0s')">TRAILER</button>
+            </div>
+            <div class="movie-info">
+                <div class="movie-title">Pilot</div>
+                <div class="movie-genre">Comedy</div>
+                <div class="movie-year">2024</div>
+            </div>
+        </div>
+
+        <!-- 10 -->
+        <div class="movie-card" onclick="selectCard(this)">
+            <img src="images/Imperfect.jpg">
+            <div class="badge rating">⭐ 9.5</div>
+            <div class="badge res">4K</div>
+            <div class="overlay"></div>
+            <div class="actions">
+                <button class="btn">WATCH</button>
+                <button class="btn" onclick="event.stopPropagation(); window.open('https://youtu.be/f4Sc26vQHcU?si=4S6fqABiC2q65bvT')">TRAILER</button>
+            </div>
+            <div class="movie-info">
+                <div class="movie-title">Imperfect</div>
+                <div class="movie-genre">Comedy and romance</div>
+                <div class="movie-year">2019</div>
+            </div>
+        </div>
+        </div>
+        <div class="arrow right" onclick="scrollRight(this)">›</div>
+    </div>
+</section>
+
+<section id="drama">
+    <h2 class="section-title">Drama</h2>
+    <div class="scroll-container">
+        <div class="arrow left" onclick="scrollLeft(this)">‹</div>
+        <div class="card-row">
+             <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Crash Landing on You.jpg">
+                <div class="badge rating">⭐ 9.7</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/GVQGWgeVc4k?si=FwHk6nGDuCZgc_CI')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Crash Landing on You</div>
+                    <div class="movie-genre">Romance, action, comedy, and political tension</div>
+                    <div class="movie-year">2019</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Itewon Class.jpg">
+                <div class="badge rating">⭐ 9.7</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/NNP8m3gaaFE?si=M3zISIoPqVJtaMJ1')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Itewon Class</div>
+                    <div class="movie-genre">Romance, Sosial Commentary, and Comedy</div>
+                    <div class="movie-year">2020</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Business Proposal.jpg">
+                <div class="badge rating">⭐ 9.6</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/mh4R-WXRhQo?si=KRikT9vuj1aKZy6K')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Business Proposal</div>
+                    <div class="movie-genre">Romantic Comedy</div>
+                    <div class="movie-year">2022</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Reply 1988.jpg">
+                <div class="badge rating">⭐ 9.5</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/50n51UJUV8Q?si=rNLc8u1wlwcynrVT')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Reply 1988</div>
+                    <div class="movie-genre">Family,Romance, and Comedy</div>
+                    <div class="movie-year">2015</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/What's Wrong with Secretary Kim.jpg">
+                <div class="badge rating">⭐ 9.7</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/EDGfWN36q5o?si=7haLVZwP1ZuEYxH6 ')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">What's Wrong with Secretary Kim</div>
+                    <div class="movie-genre">Romantic Comedy</div>
+                    <div class="movie-year">2018</div>
+                </div>
+            </div>
+             <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Unforgettable love.jpg">
+                <div class="badge rating">⭐ 9.5</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/V1bR5nUs0Rg?si=_l2n8k8adPBXJ9gd')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Unforgettable Love</div>
+                    <div class="movie-genre">Romance, Family, and comedy</div>
+                    <div class="movie-year">2021</div>
+                </div>
+            </div>
+             <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Marriage Not Dating.jpg">
+                <div class="badge rating">⭐ 9.7</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/ShkreFlB9hk?si=7MX0EeM60XwfjbUL')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Marriage Not Dating</div>
+                    <div class="movie-genre">Romance, Family, and Comedy</div>
+                    <div class="movie-year">2014</div>
+                </div>
+            </div>
+
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Strong Woman Do Bong Soon.jpg">
+                <div class="badge rating">⭐ 9.7</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/ysJzkl-SU1Q?si=QCTfh6cfRTtNZbRq')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title"></div>
+                    <div class="movie-genre">Fantasy, romance, comedy, and action</div>
+                    <div class="movie-year">2017</div>
+                </div>
+            </div>
+
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Father, I'll Take Care OF You.jpg">
+                <div class="badge rating">⭐ 9.6</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/TPxDP3FXrDA?si=t_55CbdNNEuI9xNR')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Father, I'll Take Care Of You</div>
+                    <div class="movie-genre">Romance, and family</div>
+                    <div class="movie-year">2016</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Queen of Tears 1.jpg">
+                <div class="badge rating">⭐ 9.7</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/LbAb-PSsmcc?si=sFG217jOmgHkcmCG')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Queen of Tears</div>
+                    <div class="movie-genre">Romance, marriage crisis, rediscovery of Love, and heartfelt</div>
+                    <div class="movie-year">2024</div>
+                </div>
+            </div>
+        </div>
+        <div class="arrow right" onclick="scrollRight(this)">›</div>
+    </div>
+</section>
+
+<section id="horror">
+    <h2 class="section-title">Horror</h2>
+    <div class="scroll-container">
+        <div class="arrow left" onclick="scrollLeft(this)">‹</div>
+        <div class="card-row">
+           <div class="card-row" id="cardRow">
+       <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/IT.jpg">
+                <div class="badge rating">⭐ 9.3</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/GJ1jrCnm-t8?si=Tvt4exnOmk82HLRT')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">It</div>
+                    <div class="movie-genre">Horror</div>
+                    <div class="movie-year">2017</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Insidious.webp">
+                <div class="badge rating">⭐ 8.9</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/x7uLutVRBfI?si=forHmgkBQES4L5nL')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Insidious 5 The Red Door</div>
+                    <div class="movie-genre">Horror</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Final Destination 5.jpg">
+                <div class="badge rating">⭐ 8.9</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/yqN7nHM1YTA?si=1QVPGQ3IBzrDf6Uf')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Final Destination Bloodlines</div>
+                    <div class="movie-genre">Horror / Supernatural</div>
+                    <div class="movie-year">2025</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/28 Years Later.jpg">
+                <div class="badge rating">⭐ 8.9</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/hDZ7y8RP5HE?si=WHhBFjoxnsY7nnym')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">28 Years Later</div>
+                    <div class="movie-genre">Horror / Zombies</div>
+                    <div class="movie-year">2024</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Evil Dead Rise.webp">
+                <div class="badge rating">⭐ 8.9</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/OWEq2Pf8qpk?si=nl8OFILLtMIhKpRc')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Evil Dead Rise</div>
+                    <div class="movie-genre">Horror</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+             <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Winnie The Pooh BnH.webp">
+                <div class="badge rating">⭐ 8.9</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/x7uLutVRBfI?si=forHmgkBQES4L5nL')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Winnie The Pooh Blood and Honey</div>
+                    <div class="movie-genre">Animation</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+             <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/The Nun II.jpg">
+                <div class="badge rating">⭐ 8.9</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/x7uLutVRBfI?si=forHmgkBQES4L5nL')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">The Nun II</div>
+                    <div class="movie-genre">Horror / Supernatural</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+        </div>
+        <div class="arrow right" onclick="scrollRight(this)">›</div>
+    </div>
+</section>
+
+<section id="thriller">
+    <h2 class="section-title">Thriller</h2>
+    <div class="scroll-container">
+        <div class="arrow left" onclick="scrollLeft(this)">‹</div>
+        <div class="card-row">
+           <div class="card-row" id="cardRow">
+       <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/The Hunger Games.webp">
+                <div class="badge rating">⭐ 9.3</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn"
+                        onclick="window.open('https://youtu.be/GJ1jrCnm-t8?si=Tvt4exnOmk82HLRT')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">
+                        The Hunger Games: The Ballad of Songbirds & Snakes</div>
+                    <div class="movie-genre">Thriller / Survival</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Expendables 4.webp">
+                <div class="badge rating">⭐ 8.9</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn"
+                        onclick="window.open('https://youtu.be/x7uLutVRBfI?si=forHmgkBQES4L5nL')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">The Expendables 4</div>
+                    <div class="movie-genre">Thriller / War</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Ant-Man-WASP.webp">
+                <div class="badge rating">⭐ 8.9</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn"
+                        onclick="window.open('https://youtu.be/yqN7nHM1YTA?si=1QVPGQ3IBzrDf6Uf')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Ant-Man and the Wasp: Quantumania</div>
+                    <div class="movie-genre">Thriller / Superhero</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/SCREAM 6.jpg">
+                <div class="badge rating">⭐ 8.9</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn"
+                        onclick="window.open('https://youtu.be/hDZ7y8RP5HE?si=WHhBFjoxnsY7nnym')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Scream VI</div>
+                    <div class="movie-genre">Thriller / Horror</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Meg 2.jpg">
+                <div class="badge rating">⭐ 8.9</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn"
+                        onclick="window.open('https://youtu.be/OWEq2Pf8qpk?si=nl8OFILLtMIhKpRc')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Meg 2: The Trench</div>
+                    <div class="movie-genre">Thriller / Survival</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Fast X.jpg">
+                <div class="badge rating">⭐ 8.9</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn"
+                        onclick="window.open('https://youtu.be/x7uLutVRBfI?si=forHmgkBQES4L5nL')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Fast X</div>
+                    <div class="movie-genre">Thriller / Race</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/MI Dead Reckoning.jpg">
+                <div class="badge rating">⭐ 8.9</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn"
+                        onclick="window.open('https://youtu.be/x7uLutVRBfI?si=forHmgkBQES4L5nL')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Mission: Impossible - Dead Reckoning Part One</div>
+                    <div class="movie-genre">Thriller / War</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+        </div>
+        <div class="arrow right" onclick="scrollRight(this)">›</div>
+    </div>
+</section>
+
+<section id="family">
+    <h2 class="section-title">Family</h2>
+    <div class="scroll-container">
+        <div class="arrow left" onclick="scrollLeft(this)">‹</div>
+        <div class="card-row">
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Coco.jpeg">
+                <div class="badge rating">⭐ 8.4</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/xlnPHQ3TLX8?si=3npfbyUE60ezElp1')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">COCO</div>
+                    <div class="movie-genre">Family,Musikal,Fantasi</div>
+                    <div class="movie-year">2017</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/shang-chi.jpeg">
+                <div class="badge rating">⭐ 7.3</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/giWIr7U1deA?si=1Vr3lWtNAA6pv5FZ')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Shang-Ching and the Legend of Ten Rings</div>
+                    <div class="movie-genre">Family</div>
+                    <div class="movie-year">2021</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/gambar 3.png">
+                <div class="badge rating">⭐ 9.6</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/z9lOEcYM6jY?si=Nz2PRxkaUk918bqK')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Miracle:Letters to the President</div>
+                    <div class="movie-genre">Family,Romentic</div>
+                    <div class="movie-year">2021</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/gambar 5.jpeg">
+                <div class="badge rating">⭐ 7.1</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/3euGQ7-brs4?si=1gEDcFKxYMJ4i6Mc')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Mrs.Doubtfire </div>
+                    <div class="movie-genre">Family,comedy</div>
+                    <div class="movie-year">1993</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/gambar 4.jpeg">
+                <div class="badge rating">⭐ 7.8</div>
+                <div class="badge res">4K+HDR</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/gZgUW88D15w?si=OE7JnF1VcC7lLBLM')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Mary Poppins Returns</div>
+                    <div class="movie-genre">Family,Musical,Fantasi</div>
+                    <div class="movie-year">1964</div>
+                </div>
+            </div>
+             <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/gambar 6.jpeg">
+                <div class="badge rating">⭐ 8.3</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/hXlwIYsJHpE?si=zh_eiKStSEsJwYKg')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Just Mom</div>
+                    <div class="movie-genre">Family</div>
+                    <div class="movie-year">2022</div>
+                </div>
+            </div>
+             <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/gambar 7.jpeg">
+                <div class="badge rating">⭐ 7.3</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/8n8ccbyY9qI?si=Tg_GbNKoCpMUz5ZF')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Sabtu Bersama Bapak</div>
+                    <div class="movie-genre">Family</div>
+                    <div class="movie-year">2016</div>
+                </div>
+            </div>
+        </div>
+        <div class="arrow right" onclick="scrollRight(this)">›</div>
+    </div>
+</section>
+
+<section id="crime">
+    <h2 class="section-title">Crime</h2>
+    <div class="scroll-container">
+        <div class="arrow left" onclick="scrollLeft(this)">‹</div>
+        <div class="card-row">
+             <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/gambar crime 1.jpg">
+                <div class="badge rating">⭐ 9.2</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/UaVTIH8mujA?si=ubqnWQrtHQ8cl4qi')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">The Godfather</div>
+                    <div class="movie-genre">Crime,Family</div>
+                    <div class="movie-year">1972</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/gambar crime 2.png">
+                <div class="badge rating">⭐ 7.6</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/4eHKI_cDtok?si=LYM4zVscybZY92tx')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Searching</div>
+                    <div class="movie-genre">Crime,Mistery</div>
+                    <div class="movie-year">2018</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/gambar crime 3.jpg">
+                <div class="badge rating">⭐ 7.7 </div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/hZpm1zj9510?si=7cIGStFugKwYj86f')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">BONNIE AND CLYDE</div>
+                    <div class="movie-genre">Crime</div>
+                    <div class="movie-year">1967</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/gambar crime 4.jpeg">
+                <div class="badge rating">⭐ 8.1</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/p39LFdGI-YA?si=r8zmyJosiFfrGPGH')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Chinatown</div>
+                    <div class="movie-genre">Crime,Mystery,Drama Psychologica</div>
+                    <div class="movie-year">1974</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/gambar crime 5.jpeg">
+                <div class="badge rating">⭐ 7.5</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/GqRdmI8t8PA?si=Ftq7G6JqwHrNNZjI')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Menace 2 Society </div>
+                    <div class="movie-genre">Crime,Fantasi</div>
+                    <div class="movie-year">1993</div>
+                </div>
+            </div>
+             <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/gambar crime 6.jpeg">
+                <div class="badge rating">⭐ 8.9</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/EvqJ7slnbxM?si=pJubi3Fr6bkfEb_E')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Inside Man</div>
+                    <div class="movie-genre">Crime,mystery</div>
+                    <div class="movie-year">2006</div>
+                </div>
+            </div>
+             <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/gambar crime 7.jpg">
+                <div class="badge rating">⭐ 7.9</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/8xkQoH8QbVs?si=Ot7txn3nclsyB6Gr')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Rope</div>
+                    <div class="movie-genre">Crime,Romens</div>
+                    <div class="movie-year">1948</div>
+                </div>
+            </div>
+        </div>
+        <div class="arrow right" onclick="scrollRight(this)">›</div>
+    </div>
+</section>
+
+<section id="animation">
+    <h2 class="section-title">Animation</h2>
+    <div class="scroll-container">
+        <div class="arrow left" onclick="scrollLeft(this)">‹</div>
+        <div class="card-row">
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/chainsaw.png">
+                <div class="badge rating">⭐ 9.3</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/GJ1jrCnm-t8?si=Tvt4exnOmk82HLRT')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Chainsaw-man: Reze Arc</div>
+                    <div class="movie-genre">Animation</div>
+                    <div class="movie-year">2025</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/demon.png">
+                <div class="badge rating">⭐ 8.9</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/x7uLutVRBfI?si=forHmgkBQES4L5nL')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Demon's Slayer: Infinity Castle</div>
+                    <div class="movie-genre">Animation</div>
+                    <div class="movie-year">2025</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/panda.jpg">
+                <div class="badge rating">⭐ 8.3</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/yqN7nHM1YTA?si=1QVPGQ3IBzrDf6Uf')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Kung fu panda 3</div>
+                    <div class="movie-genre">Animation</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/moana.jpg">
+                <div class="badge rating">⭐ 8.9</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/hDZ7y8RP5HE?si=WHhBFjoxnsY7nnym')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Moana 2</div>
+                    <div class="movie-genre">Animation</div>
+                    <div class="movie-year">2024</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/how.png">
+                <div class="badge rating">⭐ 9.1</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/OWEq2Pf8qpk?si=nl8OFILLtMIhKpRc')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">How to train your dragon</div>
+                    <div class="movie-genre">Animation</div>
+                    <div class="movie-year">2025</div>
+                </div>
+            </div>
+             <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/kpop.png">
+                <div class="badge rating">⭐ 8.1</div>
+                <div class="badge res">4K</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/3JTVQTk36R8?si=7kqKg4b4UprMSoKN')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Kpop Demon's Hunter</div>
+                    <div class="movie-genre">Animation</div>
+                    <div class="movie-year">2025</div>
+                </div>
+            </div>
+             <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Doraemon.jpg">
+                <div class="badge rating">⭐ 7.3</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://youtu.be/mDtbhhT8pzg?si=33SayTHASS_MNvRv')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Doraemon</div>
+                    <div class="movie-genre">Animation</div>
+                    <div class="movie-year">2025</div>
+                </div>
+            </div>
+        </div>
+        <div class="arrow right" onclick="scrollRight(this)">›</div>
+    </div>
+</section>
+
+<section id="documentary">
+    <h2 class="section-title">documentary</h2>
+    <div class="scroll-container">
+        <div class="arrow left" onclick="scrollLeft(this)">‹</div>
+        <div class="card-row">
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/medium.jpg">
+                <div class="badge rating">⭐ 7.5</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=wDtJ3M4arIc')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">The Medium</div>
+                    <div class="movie-genre">Documentary</div>
+                    <div class="movie-year">2021</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/wire.jpg">
+                <div class="badge rating">⭐ 6.7</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=EIawNRm9NWM')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Man on Wire</div>
+                    <div class="movie-genre">Documentary</div>
+                    <div class="movie-year">2008</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/13.jpg">
+                <div class="badge rating">⭐ 7.2</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=K6IXQbXPO3I')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">13TH</div>
+                    <div class="movie-genre">Documentary</div>
+                    <div class="movie-year">2016</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/solo.jpg">
+                <div class="badge rating">⭐ 8.1</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=urRVZ4SW7WU')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">Free Solo</div>
+                    <div class="movie-genre">Documentary</div>
+                    <div class="movie-year">2018</div>
+                </div>
+            </div>
+            <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Factory.jpg">
+                <div class="badge rating">⭐ 6.7</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=m36QeKOJ2Fc')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">American Factory</div>
+                    <div class="movie-genre">Documentary</div>
+                    <div class="movie-year">2019</div>
+                </div>
+            </div>
+             <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/all.jpg">
+                <div class="badge rating">⭐ 7.5</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=GoTlULspDyY')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">All That Breathes</div>
+                    <div class="movie-genre">Documentary</div>
+                    <div class="movie-year">2022</div>
+                </div>
+            </div>
+             <div class="movie-card" onclick="selectCard(this)">
+                <img src="images/Dissident.jpg">
+                <div class="badge rating">⭐ 9.1</div>
+                <div class="badge res">HD</div>
+                <div class="overlay"></div>
+                <div class="actions">
+                    <button class="btn">WATCH</button>
+                    <button class="btn" onclick="window.open('https://www.youtube.com/watch?v=2I6hjwblA_g')">TRAILER</button>
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title">The Dissident</div>
+                    <div class="movie-genre">Documentary</div>
+                    <div class="movie-year">2020</div>
+                 </div>
+            </div>
+        </div>
+        <div class="arrow right" onclick="scrollRight(this)">›</div>
+    </div>
+</section>
+<script>
+    
+function scrollLeft(btn) {
+    const row = btn.parentElement.querySelector('.card-row');
+    row.scrollBy({ left: -250, behavior: 'smooth' });
+}
+
+function scrollRight(btn) {
+    const row = btn.parentElement.querySelector('.card-row');
+    row.scrollBy({ left: 250, behavior: 'smooth' });
+}
+
+function selectCard(card) {
+    const group = card.closest('.card-row').querySelectorAll('.movie-card');
+    group.forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+}
+
+function openTrailer(url) {
+    const popup = document.createElement('div');
+    popup.classList.add('trailer-popup');
+    popup.innerHTML = `
+        <div class="popup-bg" onclick="this.parentElement.remove()"></div>
+        <iframe width="800" height="450" src="${url}" frameborder="0" allowfullscreen></iframe>
+    `;
+    document.body.appendChild(popup);
+}
+</script>
+
+<style>
+.trailer-popup {
+  position: fixed; inset: 0;
+  display: flex; justify-content: center; align-items: center;
+  background: rgba(0,0,0,0.8);
+  z-index: 1000;
+}
+.popup-bg {
+  position: absolute; inset: 0;
+}
+.trailer-popup iframe {
+  border-radius: 10px;
+  z-index: 1001;
+}
+</style>
+
+</body>
+</html>
